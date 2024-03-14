@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Hi, {{ user.username }}!</h1>
+{% if user %}
+<h1>Bok, {{ user.username }}!</h1>
+{% endif %}
 {% for ticket in tickets %}
 <div>
-  <p>{{}}</p>
+  <p>ticket</p>
 </div>
 {% endfor %}
 {% endblock %}

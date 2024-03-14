@@ -4,3 +4,4 @@ flask-wtf
 flask-sqlalchemy
 flask-migrate
 mysql-connector-python
+flask-login

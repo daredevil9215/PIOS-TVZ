@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Sign In</h1>
+<h1>Prijava</h1>
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
   <p>
@@ -21,4 +21,5 @@
   <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
   <p>{{ form.submit() }}</p>
 </form>
-{ %endblock %}
+<p>Novi Korisnik? <a href="{{ url_for('register') }}">Klikni za Registraciju!</a></p>
+{% endblock %}

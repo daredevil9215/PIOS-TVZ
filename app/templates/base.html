@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% if title %}
+    <title>{{ title }} - TIM09 Ticket App</title>
+    {% else %}
+    <title>Dobrodošli na TIM09 Ticket App</title>
+    {% endif %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div>
+      TIM09 Ticket App:
+      <a href="{{ url_for('index') }}">Početna</a>
+      {% if current_user.is_anonymous %}
+      <a href="{{ url_for('login') }}">Prijava</a>
+      {% else %}
+        {% if user %}
+          {% if user.role == 'admin' %} 
+          <a href="{{ url_for('admin') }}">Admin</a>
+          {% endif %}
+        {% endif %}
+      <a href="{{ url_for('profile', username=current_user.username) }}">Moj profil</a>
+      <a href="{{ url_for('logout') }}">Odjava</a>
+      {% endif %}
+    </div>
+    <hr>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </body>
+</html>
