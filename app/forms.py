@@ -6,25 +6,25 @@ from app import db
 from app.models import User
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+    username = StringField('Korisničko Ime', validators=[DataRequired()])
+    password = PasswordField('Lozinka', validators=[DataRequired()])
+    remember_me = BooleanField('Zapamti Prijavu')
+    submit = SubmitField('Prijavi Se')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField('Korisničko Ime', validators=[DataRequired()])
+    password = PasswordField('Lozinka', validators=[DataRequired()])
     password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')]
+        'Ponovi Lozinku', validators=[DataRequired(), EqualTo('password')]
     )
-    submit = SubmitField('Register')
+    submit = SubmitField('Registriraj Se')
 
     def validate_username(self, username):
         user = db.session.scalar(sa.select(User).where(
             User.username == username.data
         ))
         if user is not None:
-            raise ValidationError('Please use a different username.')
+            raise ValidationError('Molimo koristite drugo korisničko ime')
 
 class EditProfileForm(FlaskForm):
     username = StringField('Korisničko ime', validators=[DataRequired()])

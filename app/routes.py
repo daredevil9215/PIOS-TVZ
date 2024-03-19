@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
@@ -23,7 +23,7 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('Pogrešan username ili password')
             return redirect(url_for('login'))
-        flash('Prijava zatražena za korisnika {}, zapamti={}'.format(
+        flash('Korisnik {} prijavljen, zapamti={}'.format(
             form.username.data, form.remember_me.data))
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('index'))
@@ -35,7 +35,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, role='customer', balance=0)
+        user = User(username=form.username.data, is_admin=False, balance=0)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -58,3 +58,11 @@ def profile(username):
 @login_required
 def edit_profile():
     form = EditProfileForm(current_user.username)
+
+@app.route('/admin')
+@login_required
+def admin_index():
+    if current_user.is_admin:
+        return render_template('admin.html', title='Admin panel', user=user)
+    else:
+        abort(403)

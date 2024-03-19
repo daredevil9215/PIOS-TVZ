@@ -22,10 +22,10 @@ class User(UserMixin, db.Model):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
                                                 unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-    role = db.Column(db.String(20), nullable=False)
+    is_admin = db.Column(db.Boolean(), default=False)
     balance = db.Column(db.Float, nullable=False)
     orders = db.relationship('Order', backref='user', lazy=True)
-    basket_items = db.relationship('BasketItem', backref='user', lazy=True)
+    cart_items = db.relationship('CartItem', backref='user', lazy=True)
 
     @login.user_loader
     def load_user(id):
@@ -40,24 +40,29 @@ class User(UserMixin, db.Model):
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    city = db.Column(db.String(100), nullable=True)
+    name = db.Column(db.String(100), nullable=True)
+    line = db.Column(db.String(100), nullable=True)
     #quantity = db.Column(db.Integer, default=1, nullable=False)
+    total_seats = db.Column(db.Integer, nullable=True)
+    reserved_seats = db.Column(db.Integer, nullable=False, default=0)
+    price = db.Column(db.Float, nullable=False)
     orders = db.relationship('Order', secondary='order_ticket', backref='tickets', lazy=True)
-    basket_items = db.relationship('BasketItem', backref='ticket', lazy=True)
+    cart_items = db.relationship('CartItem', backref='ticket', lazy=True)
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     total_price = db.Column(db.Float, nullable=False)
+    payment_method = db.Column(db.String(20), nullable=False)  # 'card' or 'cash'
 
 class OrderTicket(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'), primary_key=True)
 
-class BasketItem(db.Model):
+class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # Nullable for guest cart items
     ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 

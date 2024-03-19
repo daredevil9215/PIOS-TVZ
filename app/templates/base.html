@@ -17,12 +17,10 @@
       {% if current_user.is_anonymous %}
       <a href="{{ url_for('login') }}">Prijava</a>
       {% else %}
-        {% if user %}
-          {% if user.role == 'admin' %} 
-          <a href="{{ url_for('admin') }}">Admin</a>
-          {% endif %}
+        <a href="{{ url_for('profile', username=current_user.username) }}">Moj profil</a>
+        {% if current_user.is_admin %}
+        <a href="{{ url_for('admin_index') }}">Administracija</a>
         {% endif %}
-      <a href="{{ url_for('profile', username=current_user.username) }}">Moj profil</a>
       <a href="{{ url_for('logout') }}">Odjava</a>
       {% endif %}
     </div>
