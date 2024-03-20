@@ -5,7 +5,7 @@ import sqlalchemy.orm as so
 from app import db, login
 from flask_login import UserMixin
 
-#class User(db.Model):
+# class User(db.Model):
 #    id: so.Mapped[int] = so.mapped_column(primary_key=True)
 #    username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
 #                                                unique=True)
@@ -16,6 +16,7 @@ from flask_login import UserMixin
 #
 #    def __repr__(self):
 #        return '<User {}>'.format(self.username)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,31 +43,40 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city = db.Column(db.String(100), nullable=True)
     name = db.Column(db.String(100), nullable=True)
-    line = db.Column(db.String(100), nullable=True)
-    #quantity = db.Column(db.Integer, default=1, nullable=False)
+    route = db.Column(db.String(100), nullable=True)
+    # quantity = db.Column(db.Integer, default=1, nullable=False)
     total_seats = db.Column(db.Integer, nullable=True)
     reserved_seats = db.Column(db.Integer, nullable=False, default=0)
     price = db.Column(db.Float, nullable=False)
-    orders = db.relationship('Order', secondary='order_ticket', backref='tickets', lazy=True)
+    orders = db.relationship(
+        'Order', secondary='order_ticket', backref='tickets', lazy=True)
     cart_items = db.relationship('CartItem', backref='ticket', lazy=True)
+
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     total_price = db.Column(db.Float, nullable=False)
-    payment_method = db.Column(db.String(20), nullable=False)  # 'card' or 'cash'
+    payment_method = db.Column(
+        db.String(20), nullable=False)  # 'card' or 'cash'
+
 
 class OrderTicket(db.Model):
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'), primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey(
+        'order.id'), primary_key=True)
+    ticket_id = db.Column(db.Integer, db.ForeignKey(
+        'ticket.id'), primary_key=True)
+
 
 class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # Nullable for guest cart items
-    ticket_id = db.Column(db.Integer, db.ForeignKey('ticket.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id'), nullable=True)  # Nullable for guest cart items
+    ticket_id = db.Column(db.Integer, db.ForeignKey(
+        'ticket.id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
-#class Notification(db.Model):
+# class Notification(db.Model):
 #    id = db.Column(db.Integer, primary_key=True)
 #    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 #    message = db.Column(db.Text, nullable=False)

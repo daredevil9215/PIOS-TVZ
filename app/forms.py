@@ -1,15 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, TextAreaField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, Length
+from wtforms import StringField, PasswordField, BooleanField, TextAreaField, SubmitField, FloatField
+from wtforms.validators import ValidationError, DataRequired, EqualTo, Length, NumberRange
 import sqlalchemy as sa
 from app import db
 from app.models import User
+
 
 class LoginForm(FlaskForm):
     username = StringField('Korisničko Ime', validators=[DataRequired()])
     password = PasswordField('Lozinka', validators=[DataRequired()])
     remember_me = BooleanField('Zapamti Prijavu')
     submit = SubmitField('Prijavi Se')
+
 
 class RegistrationForm(FlaskForm):
     username = StringField('Korisničko Ime', validators=[DataRequired()])
@@ -26,9 +28,11 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Molimo koristite drugo korisničko ime')
 
+
 class EditProfileForm(FlaskForm):
     username = StringField('Korisničko ime', validators=[DataRequired()])
-    about_me = TextAreaField('O meni', validators=[Length(min=0, max=140)])
+    balance = FloatField('Stanje računa', validators=[DataRequired(
+    ), NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
     submit = SubmitField('Pošalji')
 
     def __init__(self, original_username, *args, **kwargs):
