@@ -8,32 +8,62 @@
     {% endif %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- <link href="css/style.css" rel="stylesheet"> -->
+    <style>
+        @media (prefers-color-scheme: dark) {
+            .dark {
+                --bg-color: #1a202c;
+                --text-color: #cbd5e0;
+                --input-bg-color: #2d3748;
+                --input-border-color: #4a5568;
+                --btn-bg-color: #4a5568;
+                --btn-text-color: #ffffff;
+            }
+        }
+
+        body.dark {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+    </style>
   </head>
-  <body>
-    <div>
-      TIM09 Ticket App:
-      <a href="{{ url_for('index') }}">Početna</a>
-      {% if current_user.is_anonymous %}
-      <a href="{{ url_for('login') }}">Prijava</a>
-      {% else %}
-        <a href="{{ url_for('profile', username=current_user.username) }}">Moj profil</a>
-        {% if current_user.is_admin %}
-        <a href="{{ url_for('admin_index') }}">Administracija</a>
-        {% endif %}
-      <a href="{{ url_for('logout') }}">Odjava</a>
-      {% endif %}
-    </div>
-    <hr>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
+  <body class="dark flex flex-col min-h-screen">
+      <nav class="bg-blue-500 p-4">
+          <div class="container mx-auto">
+              <a href="{{ url_for('index') }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/index' else '' }}">Početna</a>
+              {% if current_user.is_anonymous %}
+              <a href="{{ url_for('login') }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/login' else '' }}">Prijava</a>
+              {% else %}
+                <a href="{{ url_for('profile', username=current_user.username) }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/profile' else '' }}">Moj profil</a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin_index') }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/admin' else '' }}">Administracija</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="text-white ml-4">Odjava</a>
+              {% endif %}
+          </div>
+      </nav>
+
+      <div class="container mx-auto mt-8 flex-grow">
+          <h1 class="text-3xl font-bold text-center mb-4">WEB-APLIKACIJA ZA REZERVACIJU I KUPNJU KARATA JAVNOG PRIJEVOZA</h1>
+          <!-- <p class="text-lg text-center text-white-700">WEB-APLIKACIJA ZA REZERVACIJU I KUPNJU KARATA JAVNOG PRIJEVOZA</p> -->
+          <!-- <hr> -->
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+      </div>
   </body>
+  <footer class="bg-white-800 text-white py-4">
+    <hr>
+    <div class="container mx-auto text-center">
+        <p>&copy; 2024 TIM09</p>
+    </div>
+</footer>
 </html>

@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Uredi Profil</h1>
-    <form action="" method="post">
+    <h1 class="text-2xl font-bold text-center mb-4">Uredi Profil</h1>
+    <form class="w-full max-w-sm mx-auto" action="" method="post">
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
+        <div class="mb-4">
+            {{ form.username.label(class="text-white-700") }}<br>
+            {{ form.username(class="form-input w-full text-black h-10") }}<br>
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.balance.label }}<br>
-            {{ form.balance(size=16) }}<br>
+        </div>
+        <div class="mb-4">
+            {{ form.balance.label(class="text-white-700") }}<br>
+            {{ form.balance(class="form-input w-full text-black h-10", type="number", min=0, step=0.00001) }}<br>
             {% for error in form.balance.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        </div>
+        <button type="submit">{{ form.submit(class="bg-blue-500 text-white px-12 py-2 rounded") }}</p>
     </form>
 {% endblock %}

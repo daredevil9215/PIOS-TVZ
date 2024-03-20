@@ -7,17 +7,21 @@ from app.models import User
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Korisničko Ime', validators=[DataRequired()])
-    password = PasswordField('Lozinka', validators=[DataRequired()])
+    username = StringField('Korisničko Ime', validators=[
+                           DataRequired("Korisničko ime je obavezno.")])
+    password = PasswordField('Lozinka', validators=[
+                             DataRequired("Lozinka je obavezna.")])
     remember_me = BooleanField('Zapamti Prijavu')
     submit = SubmitField('Prijavi Se')
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Korisničko Ime', validators=[DataRequired()])
-    password = PasswordField('Lozinka', validators=[DataRequired()])
+    username = StringField('Korisničko Ime', validators=[
+                           DataRequired(message="Korisničko ime je obavezno.")])
+    password = PasswordField('Lozinka', validators=[
+                             DataRequired("Lozinka je obavezna.")])
     password2 = PasswordField(
-        'Ponovi Lozinku', validators=[DataRequired(), EqualTo('password')]
+        'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
     )
     submit = SubmitField('Registriraj Se')
 
@@ -30,9 +34,10 @@ class RegistrationForm(FlaskForm):
 
 
 class EditProfileForm(FlaskForm):
-    username = StringField('Korisničko ime', validators=[DataRequired()])
-    balance = FloatField('Stanje računa', validators=[DataRequired(
-    ), NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
+    username = StringField('Korisničko ime', validators=[
+                           DataRequired(message="Korisničko ime je obavezno.")])
+    balance = FloatField('Stanje računa', validators=[DataRequired(message="Stanje računa je obavezno."
+                                                                   ), NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
     submit = SubmitField('Pošalji')
 
     def __init__(self, original_username, *args, **kwargs):
