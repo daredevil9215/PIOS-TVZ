@@ -1,4 +1,6 @@
-from app import db
+from app import db, create_app, models
+
+app = create_app()
 
 
 def delete_database():
@@ -7,4 +9,5 @@ def delete_database():
 
 
 if __name__ == "__main__":
-    delete_database()
+    with app.app_context():
+        delete_database()

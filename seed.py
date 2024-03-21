@@ -1,11 +1,13 @@
-from app import db
+from app import db, create_app
 from app.models import User, Ticket
+
+app = create_app()
 
 
 def seed_users():
     users = [
-        User(username="admin", password="pbkdf2:sha256:600000$WLlhsm1tjmmTKiYA$b6b8e134385f41950091bdea0244b6258a092cfb45174df8ad321baa2db649c3", is_admin=1, balance=0),
-        User(username="asd1", password="pbkdf2:sha256:600000$FwCwXGy0AtpX7ynx$49f105246ad1c31fea49a5577da11b1937f5643514ca367507621e7518cc3c3d", is_admin=0, balance=0)
+        User(username="admin", password_hash="pbkdf2:sha256:600000$WLlhsm1tjmmTKiYA$b6b8e134385f41950091bdea0244b6258a092cfb45174df8ad321baa2db649c3", is_admin=1, balance=0),
+        User(username="asd1", password_hash="pbkdf2:sha256:600000$FwCwXGy0AtpX7ynx$49f105246ad1c31fea49a5577da11b1937f5643514ca367507621e7518cc3c3d", is_admin=0, balance=0)
     ]
     for user in users:
         db.session.add(user)
@@ -19,11 +21,11 @@ def seed_tickets():
         Ticket(city="Zagreb", name="102 BRITANSKI TRG - MIHALJEVAC",
                route="BRITANSKI TRG - MIHALJEVAC", total_seats=150, reserved_seats=1, price=1.00),
         Ticket(city="Zagreb", name="121 ČRNOMEREC - KARAŽNIK - GAJNICE", route="ČRNOMEREC - KARAŽNIK - GAJNICE",
-               total_seats=100, reserved_seats=100, price=1.00),
+               total_seats=100, reserved_seats=0, price=1.00),
         Ticket(city="Zagreb", name="274 ZAGREB (DUBEC) - SESVETE - LAKTEC", route="ZAGREB (DUBEC) - SESVETE - LAKTEC",
-               total_seats=100, reserved_seats=100, price=1.00),
+               total_seats=100, reserved_seats=0, price=1.00),
         Ticket(city="Zagreb", name="243 GLAVNI KOLODVOR - KAJZERICA", route="GLAVNI KOLODVOR - KAJZERICA",
-               total_seats=100, reserved_seats=100, price=1.00),
+               total_seats=100, reserved_seats=0, price=1.00),
         Ticket(city="Zagreb", name="Dnevna karta Zagreb", route="",
                reserved_seats=0, price=4.00),
         Ticket(city="Zagreb", name="Tjedna karta Zagreb", route="",
@@ -72,5 +74,6 @@ def seed_tickets():
 
 
 if __name__ == "__main__":
-    seed_users()
-    seed_tickets()
+    with app.app_context():
+        seed_users()
+        seed_tickets()
