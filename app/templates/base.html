@@ -35,7 +35,7 @@
               {% if current_user.is_anonymous %}
               <a href="{{ url_for('auth.login') }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/auth/login' else '' }}">Prijava</a>
               {% else %}
-                <a href="{{ url_for('main.profile', username=current_user.username) }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/profile' else '' }}">Moj profil</a>
+                <a href="{{ url_for('main.profile', username=current_user.username) }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/profile/*' else '' }}">Moj profil</a>
                 {% if current_user.is_admin %}
                 <a href="{{ url_for('admin.index') }}" class="text-white ml-4 {{ 'font-bold' if request.path == '/admin' else '' }}">Administracija</a>
                 {% endif %}

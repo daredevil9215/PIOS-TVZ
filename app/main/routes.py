@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 from app import db
-from app.models import User
+from app.models import User, Ticket
 from app.main import bp
 from app.main.forms import EditProfileForm
 import sqlalchemy as sa
@@ -9,7 +9,8 @@ import sqlalchemy as sa
 
 @bp.route('/')
 def index():
-    return render_template('index.html', title='Početna')
+    tickets = Ticket.query.all()
+    return render_template('index.html', title='Početna', tickets=tickets)
 
 
 @bp.route('/profile/<username>')

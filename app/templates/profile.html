@@ -4,6 +4,6 @@
   {% if user == current_user %}
   <h1>Korisnik: {{ current_user.username }}</h1>
   <p>Stanje računa: <b>?kn</b></p>
-  <p><a href="{{ url_for('edit_profile') }}">Uredi Profil</a></p>
+  <p><a href="{{ url_for('main.edit_profile') }}">Uredi Profil</a></p>
   {% endif %}
 {% endblock %}

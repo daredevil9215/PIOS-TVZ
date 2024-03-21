@@ -4,9 +4,15 @@
 {% if user %}
 <h1>Bok, {{ user.username }}!</h1>
 {% endif %}
-{% for ticket in tickets %}
-<div>
-  <p>ticket</p>
-</div>
-{% endfor %}
+    <div class="grid grid-cols-3 gap-4">
+        {% for ticket in tickets %}
+        <div class="text-center border p-4">
+            <h1 class="font-bold">{{ ticket.name }}</h1>
+            <p>{{ ticket.route }}</p>
+            <p>Cijena: {{ ticket.price }} €</p>
+            <!-- Add more ticket details as needed -->
+            <button class="bg-blue-500 text-white px-12 py-2 rounded">Dodaj u košaricu</button>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
