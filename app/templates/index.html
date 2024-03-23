@@ -1,18 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if user %}
-<h1>Bok, {{ user.username }}!</h1>
-{% endif %}
     <div class="grid grid-cols-3 gap-4">
         {% for ticket in tickets %}
         <div class="text-center border p-4">
             <h1 class="font-bold">{{ ticket.name }}</h1>
             <p>{{ ticket.route }}</p>
-            <p>Cijena: {{ ticket.price }} €</p>
-            <!-- Add more ticket details as needed -->
-            <button class="bg-blue-500 text-white px-12 py-2 rounded">Dodaj u košaricu</button>
+            <p>Rezervirano: {{ ticket.reserved_seats }}</p>
+            <p>Ukupno: {{ ticket.total_seats }}</p>
+            <p class="text-green-500 font-bold mb-2">Cijena: {{ ticket.price }} €</p>
+            <label for="quantity-{{ ticket.id }}" class="mb-2">Količina: </label>
+            <input type="number" class="w-16 px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mb-4 text-black" id="quantity-{{ ticket.id }}" name="quantity" value="1" min="1" max={{ ticket.total_seats - ticket.reserved_seats }}>
+            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300" data-ticket-id="{{ ticket.id }}">Dodaj u košaricu</button>
         </div>
         {% endfor %}
     </div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.add-to-cart').click(function() {
+          let ticketId = $(this).data('ticket-id')
+          let quantity = $('#quantity-' + ticketId).val()
+          $.post('/add-to-cart', { ticket_id: ticketId, quantity: quantity }, function(response) {
+            if (response.success) {
+              window.location.href = response.redirect_url; // Redirect to homepage
+            }
+          })
+        })
+      })
+    </script>
 {% endblock %}

@@ -44,8 +44,7 @@ class Ticket(db.Model):
     city = db.Column(db.String(100), nullable=True)
     name = db.Column(db.String(100), nullable=True)
     route = db.Column(db.String(100), nullable=True)
-    # quantity = db.Column(db.Integer, default=1, nullable=False)
-    total_seats = db.Column(db.Integer, nullable=True)
+    total_seats = db.Column(db.Integer, nullable=False, default=0)
     reserved_seats = db.Column(db.Integer, nullable=False, default=0)
     price = db.Column(db.Float, nullable=False)
     orders = db.relationship(
