@@ -89,3 +89,10 @@ def remove_from_cart(item_id):
     session['cart'] = cart
     flash('Karta izbrisana iz košarice', 'success')
     return redirect(url_for('main.view_cart'))
+
+
+@bp.route('/checkout', methods=['GET', 'POST'])
+@login_required
+def checkout():
+    cart = session.get('cart', {})
+    return render_template('checkout.html', cart=cart)
