@@ -45,7 +45,7 @@
                   <a href="{{ url_for('main.index') }}" class="text-white mr-4 {{ 'font-bold' if request.path == '/' else '' }}">Početna</a>
               </div>
               <div class="flex items-center">
-                  <a href="{{ url_for('main.cart') }}" class="text-white mr-4">
+                  <a href="{{ url_for('main.view_cart') }}" class="text-white mr-4 {{ 'font-bold' if '/cart' in request.path else '' }}">
                     Košarica
                     {% if 'cart' in session %}
                         <span class="bg-yellow-500 text-black rounded-full px-2">{{ session['cart']|length }}</span>

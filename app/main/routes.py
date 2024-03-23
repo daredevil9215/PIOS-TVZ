@@ -37,6 +37,12 @@ def edit_profile():
     return render_template('edit_profile.html', title='Uredi Profil', form=form)
 
 
+@bp.route('/cart', methods=['GET'])
+def view_cart():
+    cart = session.get('cart', {})
+    return render_template('cart.html', cart=cart)
+
+
 @bp.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
     ticket_id = request.form.get('ticket_id')
@@ -58,3 +64,28 @@ def add_to_cart():
 
     flash('Karta dodana u košaricu.', 'success')
     return jsonify({'success': True, 'redirect_url': url_for('main.index')})
+
+
+@bp.route('/update_cart/<item_id>', methods=['POST'])
+def update_cart(item_id):
+    new_quantity = int(request.form['quantity'])
+    cart_items = session.get('cart', {})
+    if item_id in cart_items:
+        cart_items[item_id]['quantity'] = new_quantity
+        session['cart'] = cart_items
+        flash('Košarica je ažurirana.', 'success')
+        return redirect(url_for('main.view_cart'))
+    else:
+        flash('Karta nije pronađena.', 'error')
+        return redirect(url_for('main.view_cart'))
+
+
+@bp.route('/remove_from_cart/<item_id>', methods=['POST'])
+def remove_from_cart(item_id):
+    cart = session.get('cart', [])
+    for item_id in cart:
+        del cart[item_id]
+        break
+    session['cart'] = cart
+    flash('Karta izbrisana iz košarice', 'success')
+    return redirect(url_for('main.view_cart'))
