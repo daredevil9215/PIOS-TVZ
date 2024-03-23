@@ -8,9 +8,9 @@
             <p>{{ ticket.route }}</p>
             <p>Rezervirano: {{ ticket.reserved_seats }}</p>
             <p>Ukupno: {{ ticket.total_seats }}</p>
-            <p class="text-green-500 font-bold mb-2">Cijena: {{ ticket.price }} €</p>
+            <p class="text-green-500 font-bold text-lg mb-2">Cijena: {{ ticket.price }} €</p>
             <label for="quantity-{{ ticket.id }}" class="mb-2">Količina: </label>
-            <input type="number" class="w-16 px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mb-4 text-black" id="quantity-{{ ticket.id }}" name="quantity" value="1" min="1" max={{ ticket.total_seats - ticket.reserved_seats }}>
+            <input type="number" class="w-24 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mb-4 text-black" id="quantity-{{ ticket.id }}" name="quantity" value="1" min="1" max={{ ticket.total_seats - ticket.reserved_seats }}>
             <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300" data-ticket-id="{{ ticket.id }}">Dodaj u košaricu</button>
         </div>
         {% endfor %}
