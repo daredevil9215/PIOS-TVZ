@@ -48,6 +48,10 @@
                   <a href="{{ url_for('main.index') }}" class="text-white mr-4 {{ 'font-bold' if request.path == '/' else '' }}">Početna</a>
               </div>
               <div class="flex items-center">
+                  <form action="/search" method="POST">
+                      <input type="text" name="search_query" placeholder="Unesi za pretraživanje" class="w-64 px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mr-2 text-black">
+                      <button type="submit" class="text-white mr-4 {{ 'font-bold' if '/search' in request.path else '' }}">Pretraživanje</button>
+                  </form>
                   <a href="{{ url_for('main.view_cart') }}" class="text-white mr-4 {{ 'font-bold' if '/cart' in request.path else '' }}">
                     Košarica
                     {% if 'cart' in session %}

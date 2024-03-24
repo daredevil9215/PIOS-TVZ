@@ -13,6 +13,16 @@ def index():
     return render_template('index.html', title='Početna', tickets=tickets)
 
 
+@bp.route('/search', methods=['POST'])
+def search_tickets():
+    search_query = request.form['search_query']
+    # Query the database for tickets matching the search query
+    # Here, 'name' is assumed to be a column in the Ticket model
+    tickets = Ticket.query.filter(
+        Ticket.name.ilike(f"%{search_query}%")).all()
+    return render_template('search_results.html', tickets=tickets, search_query=search_query)
+
+
 @bp.route('/profile/<username>')
 @login_required
 def profile(username):
