@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, session
 from flask_login import current_user, login_required
 from app import db
-from app.models import User, Ticket
+from app.models import User, Ticket, Order, OrderTicket
 from app.main import bp
 from app.main.forms import EditProfileForm
 import sqlalchemy as sa
@@ -40,7 +40,9 @@ def edit_profile():
 @bp.route('/cart', methods=['GET'])
 def view_cart():
     cart = session.get('cart', {})
-    return render_template('cart.html', cart=cart)
+    total_amount = sum(item['price'] * item['quantity']
+                       for item in cart.values())
+    return render_template('cart.html', cart=cart, total_amount=total_amount)
 
 
 @bp.route('/add-to-cart', methods=['POST'])
@@ -91,8 +93,40 @@ def remove_from_cart(item_id):
     return redirect(url_for('main.view_cart'))
 
 
-@bp.route('/checkout', methods=['GET', 'POST'])
+@bp.route('/checkout', methods=['GET'])
 @login_required
 def checkout():
     cart = session.get('cart', {})
-    return render_template('checkout.html', cart=cart)
+    total_amount = sum(item['price'] * item['quantity']
+                       for item in cart.values())
+    if total_amount == 0:
+        flash('Nemate karte u košarici.', 'error')
+        return redirect(url_for('main.index'))
+    user_balance = current_user.balance
+    return render_template('checkout.html', user_balance=user_balance, total_amount=total_amount, cart=cart)
+
+
+@bp.route('/process_payment', methods=['POST'])
+@login_required
+def process_payment():
+    user_balance = current_user.balance
+    cart = session.get('cart', {})
+    total_amount = sum(item['price'] for item in cart.values())
+    payment_method = request.form.get('payment_method')
+    if total_amount <= user_balance:
+        user_balance -= total_amount
+        order = Order(user_id=current_user.id,
+                      total_amount=total_amount, payment_method=payment_method)
+        db.session.add(order)
+        db.session.commit()
+        order_id = order.id
+        for item_id, item_info in cart.items():
+            order_ticket = OrderTicket(
+                order_id=order_id, ticket_id=item_id, quantity=item_info.get('quantity', 0))
+            db.session.add(order_ticket)
+        db.session.commit()
+        session.pop('cart', None)
+        flash('Plaćanje uspješno!', 'success')
+    else:
+        flash('Nemate dovoljno sredstava na računu.', 'error')
+    return redirect(url_for('main.index'))

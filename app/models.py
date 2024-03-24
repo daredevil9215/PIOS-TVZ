@@ -55,7 +55,7 @@ class Ticket(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    total_price = db.Column(db.Float, nullable=False)
+    total_amount = db.Column(db.Float, nullable=False)
     payment_method = db.Column(
         db.String(20), nullable=False)  # 'card' or 'cash'
 
@@ -65,6 +65,7 @@ class OrderTicket(db.Model):
         'order.id'), primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey(
         'ticket.id'), primary_key=True)
+    quantity = db.Column(db.Integer, nullable=False)
 
 
 class CartItem(db.Model):
