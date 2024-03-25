@@ -4,6 +4,7 @@
 
     <h1 class="text-2xl font-bold mb-4">Rezultati pretraživanja za "{{ search_query }}"</h1>
     <div class="grid grid-cols-3 gap-4">
+    {% if tickets %}
         {% for ticket in tickets %}
         <div class="text-center border p-4">
             <h1 class="font-bold">{{ ticket.name }}</h1>
@@ -16,6 +17,9 @@
             <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300" data-ticket-id="{{ ticket.id }}">Dodaj u košaricu</button>
         </div>
         {% endfor %}
+    {% else %}
+    <p>Karte nisu pronađene.</p>
+    {% endif %}
     </div>
     <script type="text/javascript">
       $(document).ready(function() {

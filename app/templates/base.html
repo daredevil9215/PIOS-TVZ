@@ -65,7 +65,7 @@
                   {% else %}
                     <a href="{{ url_for('main.profile', username=current_user.username) }}" class="text-white mr-4 {{ 'font-bold' if '/profile' in request.path else '' }}">Moj profil</a>
                     {% if current_user.is_admin %}
-                    <a href="{{ url_for('admin.index') }}" class="text-white mr-4 {{ 'font-bold' if '/admin' in request.path else '' }}">Administracija</a>
+                    <a href="{{ url_for('admin.dashboard') }}" class="text-white mr-4 {{ 'font-bold' if '/admin' in request.path else '' }}">Administracija</a>
                     {% endif %}
                     <a href="{{ url_for('auth.logout') }}" class="text-white mr-4">Odjava</a>
                   {% endif %}
