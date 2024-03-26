@@ -4,7 +4,7 @@ from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRan
 from app.models import Ticket
 
 
-class EditTicketForm(FlaskForm):
+class TicketForm(FlaskForm):
     name = StringField('Ime', validators=[
         DataRequired(message="Ime je obavezno.")])
     city = StringField('Grad', validators=[

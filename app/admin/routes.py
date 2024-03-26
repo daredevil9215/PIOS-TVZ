@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_args
 from app import db
 from app.admin import bp
-from app.admin.forms import EditTicketForm
+from app.admin.forms import TicketForm
 from app.models import Ticket, Order, User
 
 
@@ -39,13 +39,23 @@ def view_tickets():
     return render_template('admin/tickets.html', pagination=pagination)
 
 
-@bp.route('/add_ticket')
+@bp.route('/add_ticket', methods=['GET', 'POST'])
 @login_required
 def add_ticket():
     if not current_user.is_admin:
         return redirect(url_for('auth.login'))
-    else:
-        pass
+
+    form = TicketForm()
+
+    if form.validate_on_submit():
+        ticket = Ticket(name=form.name.data, city=form.city.data, route=form.route.data,
+                        total_seats=form.total_seats.data, price=form.price.data)
+        db.session.add(ticket)
+        db.session.commit()
+        flash('Karta uspješno spremljena.', 'success')
+        return redirect(url_for('admin.view_tickets'))
+
+    return render_template('admin/add_ticket.html', form=form)
 
 
 @bp.route('/admin/edit_ticket/<int:ticket_id>', methods=['GET', 'POST'])
@@ -56,7 +66,7 @@ def edit_ticket(ticket_id):
 
     ticket = Ticket.query.get_or_404(ticket_id)
 
-    form = EditTicketForm(obj=ticket)
+    form = TicketForm(obj=ticket)
 
     if form.validate_on_submit():
         form.populate_obj(ticket)
