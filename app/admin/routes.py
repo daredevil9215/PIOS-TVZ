@@ -62,7 +62,7 @@ def edit_ticket(ticket_id):
         form.populate_obj(ticket)
         db.session.commit()
         flash('Karta uspješno ažurirana.', 'success')
-        return redirect(url_for('admin.dashboard'))
+        return redirect(url_for('admin.edit_ticket', ticket_id=ticket_id))
 
     return render_template('admin/edit_ticket.html', form=form, ticket=ticket)
 
