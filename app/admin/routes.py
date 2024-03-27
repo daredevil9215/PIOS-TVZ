@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, abort, request
+from flask import render_template, flash, redirect, url_for, abort, request, jsonify
 from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_args
 from app import db
@@ -26,7 +26,9 @@ def dashboard():
 def view_users():
     if not current_user.is_admin:
         return redirect(url_for('auth.login'))
-    pass
+    per_page = request.args.get('per_page', 5, type=int)
+    pagination = User.query.order_by(User.id).paginate(per_page=per_page)
+    return render_template('admin/users.html', pagination=pagination)
 
 
 @bp.route('/tickets')
@@ -77,13 +79,17 @@ def edit_ticket(ticket_id):
     return render_template('admin/edit_ticket.html', form=form, ticket=ticket)
 
 
-@bp.route('/delete_ticket/<ticket_id>')
+@bp.route('/delete_ticket/<ticket_id>', methods=['DELETE'])
 @login_required
 def delete_ticket(ticket_id):
     if not current_user.is_admin:
-        return redirect(url_for('auth.login'))
-    else:
-        pass
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    ticket = Ticket.query.get_or_404(ticket_id)
+    db.session.delete(ticket)
+    db.session.commit()
+
+    return jsonify({'message': 'Karta uspješno izbrisana.'}), 200
 
 
 @bp.route('/orders')

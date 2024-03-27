@@ -31,7 +31,7 @@
                 <td class="py-3 px-4">{{ ticket.price }} €</td>
                 <td class="py-3 px-4">
                     <a href="{{ url_for('admin.edit_ticket', ticket_id=ticket.id) }}" class="text-blue-500 hover:text-blue-700 mr-2">Uredi</a>
-                    <a href="{{ url_for('admin.delete_ticket', ticket_id=ticket.id) }}" class="text-red-500 hover:text-red-700">Izbriši</a>
+                    <a href="" onclick="deleteTicket({{ ticket.id }})" class="text-red-500 hover:text-red-700">Izbriši</a>
                 </td>
             </tr>
             {% endfor %}
@@ -89,6 +89,33 @@
             </select>
         </div>
     </div>
+    <script type="text/javascript">
+        function deleteTicket(ticketId) {
+            if (confirm("Jeste li sigurni da želite izbrisati kartu?")) {
+                fetch(`/admin/delete_ticket/${ticketId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Brisanje karte neuspješno.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    // Refresh the page or update the ticket list as needed
+                    location.reload()
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Dogodila se greška prilikom brisanja karte.');
+                });
+            }
+        }
+    </script>
 {% endblock %}
 
 
