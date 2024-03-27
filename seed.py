@@ -6,8 +6,10 @@ app = create_app()
 
 def seed_users():
     users = [
-        User(username="admin", password_hash="pbkdf2:sha256:600000$WLlhsm1tjmmTKiYA$b6b8e134385f41950091bdea0244b6258a092cfb45174df8ad321baa2db649c3", is_admin=1, balance=0),
-        User(username="asd", password_hash="pbkdf2:sha256:600000$FwCwXGy0AtpX7ynx$49f105246ad1c31fea49a5577da11b1937f5643514ca367507621e7518cc3c3d", is_admin=0, balance=0)
+        User(firstname="admin", lastname="admin", username="admin1",
+             password_hash="pbkdf2:sha256:600000$WLlhsm1tjmmTKiYA$b6b8e134385f41950091bdea0244b6258a092cfb45174df8ad321baa2db649c3", is_admin=1, balance=0),
+        User(firstname="asd", lastname="asd", username="asd",
+             password_hash="pbkdf2:sha256:600000$FwCwXGy0AtpX7ynx$49f105246ad1c31fea49a5577da11b1937f5643514ca367507621e7518cc3c3d", is_admin=0, balance=0)
     ]
     for user in users:
         db.session.add(user)

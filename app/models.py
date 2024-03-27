@@ -20,6 +20,10 @@ from flask_login import UserMixin
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    firstname: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
+                                                 unique=False)
+    lastname: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
+                                                unique=False)
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
                                                 unique=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))

@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_args
 from app import db
 from app.admin import bp
-from app.admin.forms import TicketForm
+from app.admin.forms import TicketForm, UserForm
 from app.models import Ticket, Order, User
 
 
@@ -31,6 +31,62 @@ def view_users():
     return render_template('admin/users.html', pagination=pagination)
 
 
+@bp.route('/add_user', methods=['GET', 'POST'])
+@login_required
+def add_user():
+    if not current_user.is_admin:
+        return redirect(url_for('auth.login'))
+
+    form = UserForm()
+
+    if form.validate_on_submit():
+        is_admin = request.form.get('is_admin') == 'True'
+        user = User(firstname=form.firstname.data, lastname=form.lastname.data,
+                    username=form.username.data, balance=form.balance.data, is_admin=is_admin)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Korisnik uspješno kreiran.', 'success')
+        return redirect(url_for('admin.view_users'))
+
+    return render_template('admin/add_user.html', form=form)
+
+
+@bp.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if not current_user.is_admin:
+        return redirect(url_for('login'))
+
+    user = User.query.get_or_404(user_id)
+
+    form = UserForm(obj=user)
+
+    if form.validate_on_submit():
+        form.populate_obj(user)
+        is_admin = request.form.get('is_admin') == 'True'
+        user.is_admin = is_admin
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Korisnik uspješno ažuriran.', 'success')
+        return redirect(url_for('admin.edit_user', user_id=user_id))
+
+    return render_template('admin/edit_user.html', form=form, user=user)
+
+
+@bp.route('/delete_user/<user_id>', methods=['DELETE'])
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({'message': 'Korisnik uspješno izbrisan.'}), 200
+
+
 @bp.route('/tickets')
 @login_required
 def view_tickets():
@@ -54,7 +110,7 @@ def add_ticket():
                         total_seats=form.total_seats.data, price=form.price.data)
         db.session.add(ticket)
         db.session.commit()
-        flash('Karta uspješno spremljena.', 'success')
+        flash('Karta uspješno kreirana.', 'success')
         return redirect(url_for('admin.view_tickets'))
 
     return render_template('admin/add_ticket.html', form=form)

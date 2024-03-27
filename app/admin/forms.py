@@ -1,7 +1,10 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FloatField, IntegerField
+from wtforms import StringField, SubmitField, FloatField, IntegerField, BooleanField, RadioField, PasswordField
 from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange
-from app.models import Ticket
+import sqlalchemy as sa
+from app import db
+from app.models import User
 
 
 class TicketForm(FlaskForm):
@@ -16,3 +19,36 @@ class TicketForm(FlaskForm):
                         validators=[])
     total_seats = IntegerField('Ukupno Mjesta', validators=[])
     submit = SubmitField('Spremi Promjene')
+
+
+class UserForm(FlaskForm):
+    firstname = StringField('Ime', validators=[
+        DataRequired(message="Ime je obavezno.")])
+    lastname = StringField('Prezime', validators=[
+                           DataRequired(message="Prezime je obavezno.")])
+    username = StringField('Korisničko ime', validators=[
+                           DataRequired(message="Korisničko ime je obavezno.")])
+    password = PasswordField('Lozinka', validators=[
+                             DataRequired("Lozinka je obavezna.")])
+    password2 = PasswordField(
+        'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
+    )
+    balance = FloatField('Stanje računa',
+                         validators=[DataRequired(message="Stanje računa je obavezno."),
+                                     NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
+    is_admin = RadioField(
+        'Admin', choices=[(True, 'Da'), (False, 'Ne')], coerce=bool, default=False)
+    submit = SubmitField('Pošalji')
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.original_username = kwargs.get(
+            'obj').username if kwargs.get('obj') else None
+
+    def validate_username(self, field):
+        if field.data == self.original_username:
+            return  # Skip validation if username is not changed
+
+        user = User.query.filter_by(username=field.data).first()
+        if user:
+            raise ValidationError('Molimo koristite drugo korisničko ime.')
