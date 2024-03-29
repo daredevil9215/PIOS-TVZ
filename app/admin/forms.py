@@ -38,7 +38,7 @@ class UserForm(FlaskForm):
                                      NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
     is_admin = RadioField(
         'Admin', choices=[(True, 'Da'), (False, 'Ne')], coerce=bool, default=False)
-    submit = SubmitField('Pošalji')
+    submit = SubmitField('Spremi')
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)

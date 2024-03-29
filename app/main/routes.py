@@ -28,7 +28,7 @@ def search_tickets():
 def profile(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
     orders = Order.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', title='Moj profil', user=user, order=orders)
+    return render_template('profile.html', title='Moj profil', user=user, orders=orders)
 
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
@@ -36,11 +36,13 @@ def profile(username):
 def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
+        current_user.firstname = form.username.data
+        current_user.lastname = form.username.data
         current_user.username = form.username.data
         current_user.balance = form.balance.data
         db.session.commit()
-        flash('Promjene su spremljene.')
-        return redirect(url_for('main.edit_profile'))
+        flash('Profil je ažuriran.', 'success')
+        return redirect(url_for('main.profile', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.balance.data = current_user.balance
