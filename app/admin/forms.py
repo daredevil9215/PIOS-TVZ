@@ -62,7 +62,7 @@ class OrderedTicketForm(FlaskForm):
 
 class EditOrderForm(FlaskForm):
     payment_method = SelectField('Payment Method', choices=[(
-        'cash', 'Cash'), ('card', 'Card')], validators=[DataRequired()])
+        'gotovina', 'Gotovina'), ('kartica', 'Kartica')], validators=[DataRequired()])
     ordered_tickets = FieldList(FormField(OrderedTicketForm), min_entries=1)
     submit = SubmitField('Update')
 
