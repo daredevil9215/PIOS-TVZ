@@ -1,10 +1,10 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FloatField, IntegerField, BooleanField, RadioField, PasswordField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange
+from wtforms import StringField, SubmitField, FloatField, IntegerField, BooleanField, RadioField, PasswordField, SelectField, FieldList, FormField
+from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange, Optional
 import sqlalchemy as sa
 from app import db
-from app.models import User
+from app.models import User, Order, OrderTicket
 
 
 class TicketForm(FlaskForm):
@@ -52,3 +52,24 @@ class UserForm(FlaskForm):
         user = User.query.filter_by(username=field.data).first()
         if user:
             raise ValidationError('Molimo koristite drugo korisničko ime.')
+
+
+class OrderedTicketForm(FlaskForm):
+    ticket_name = StringField('Ticket Name', render_kw={'readonly': True})
+    quantity = IntegerField('Quantity', validators=[
+                            DataRequired(), NumberRange(min=1)])
+
+
+class EditOrderForm(FlaskForm):
+    payment_method = SelectField('Payment Method', choices=[(
+        'cash', 'Cash'), ('card', 'Card')], validators=[DataRequired()])
+    ordered_tickets = FieldList(FormField(OrderedTicketForm), min_entries=1)
+    submit = SubmitField('Update')
+
+    def populate_from_model(self, order):
+        self.payment_method.data = order.payment_method
+        for ordered_ticket in order.order_tickets:
+            form = OrderedTicketForm()
+            form.ticket_name.data = ordered_ticket.ticket.name
+            form.quantity.data = ordered_ticket.quantity
+            self.ordered_tickets.append_entry(form)

@@ -43,22 +43,22 @@
                     {% endfor %}
                 </div>
                 <div class="flex justify-between">
-                <div class="">
-                    <div class="flex items-center">
-                        {{ form.balance.label(class="font-bold text-white-700") }}<br>
-                        {{ form.balance(class="form-input mt-1 ml-5 rounded-lg text-gray-800 text-lg h-10 w-24", type="number", min=0, step=0.1) }}
-                        <div class="flex px-2 text-white-700"><span class="font-bold text-lg">€</span></div>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    {{ form.is_admin.label(class="font-bold form-check-label mr-3") }}
-                    {% for subfield in form.is_admin %}
-                        <div class="form-check mr-3">
-                            {{ subfield(class="form-check-input") }}
-                            {{ subfield.label(class="form-check-label") }}
+                    <div class="">
+                        <div class="flex items-center">
+                            {{ form.balance.label(class="font-bold text-white-700") }}<br>
+                            {{ form.balance(class="form-input mt-1 ml-5 rounded-lg text-gray-800 text-lg h-10 w-24", type="number", min=0, step=0.1) }}
+                            <div class="flex px-2 text-white-700"><span class="font-bold text-lg">€</span></div>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                    <div class="flex items-center">
+                        {{ form.is_admin.label(class="font-bold form-check-label mr-3") }}
+                        {% for subfield in form.is_admin %}
+                            <div class="form-check mr-3">
+                                {{ subfield(class="form-check-input") }}
+                                {{ subfield.label(class="form-check-label") }}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 {{ form.submit(class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-full") }}
             </form>

@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_args
 from app import db
 from app.admin import bp
-from app.admin.forms import TicketForm, UserForm
+from app.admin.forms import TicketForm, UserForm, EditOrderForm
 from app.models import Ticket, Order, User
 
 
@@ -52,7 +52,7 @@ def add_user():
     return render_template('admin/add_user.html', form=form)
 
 
-@bp.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@bp.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
     if not current_user.is_admin:
@@ -74,7 +74,7 @@ def edit_user(user_id):
     return render_template('admin/edit_user.html', form=form, user=user)
 
 
-@bp.route('/delete_user/<user_id>', methods=['DELETE'])
+@bp.route('/delete_user/<int:user_id>', methods=['DELETE'])
 @login_required
 def delete_user(user_id):
     if not current_user.is_admin:
@@ -116,7 +116,7 @@ def add_ticket():
     return render_template('admin/add_ticket.html', form=form)
 
 
-@bp.route('/admin/edit_ticket/<int:ticket_id>', methods=['GET', 'POST'])
+@bp.route('/edit_ticket/<int:ticket_id>', methods=['GET', 'POST'])
 @login_required
 def edit_ticket(ticket_id):
     if not current_user.is_admin:
@@ -135,7 +135,7 @@ def edit_ticket(ticket_id):
     return render_template('admin/edit_ticket.html', form=form, ticket=ticket)
 
 
-@bp.route('/delete_ticket/<ticket_id>', methods=['DELETE'])
+@bp.route('/delete_ticket/<int:ticket_id>', methods=['DELETE'])
 @login_required
 def delete_ticket(ticket_id):
     if not current_user.is_admin:
@@ -153,4 +153,38 @@ def delete_ticket(ticket_id):
 def view_orders():
     if not current_user.is_admin:
         return redirect(url_for('auth.login'))
-    pass
+    per_page = request.args.get('per_page', 5, type=int)
+    pagination = Order.query.order_by(Order.id).paginate(per_page=per_page)
+    return render_template('admin/orders.html', pagination=pagination)
+
+
+@bp.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
+@login_required
+def edit_order(order_id):
+    if not current_user.is_admin:
+        return redirect(url_for('login'))
+
+    order = Order.query.get_or_404(order_id)
+
+    form = EditOrderForm(obj=order)
+
+    if form.validate_on_submit():
+        form.populate_obj(order)
+        db.session.commit()
+        flash('Narudžba uspješno ažurirana.', 'success')
+        return redirect(url_for('admin.edit_order', order_id=order_id))
+
+    return render_template('admin/edit_order.html', form=form, order=order)
+
+
+@bp.route('/delete_order/<int:order_id>', methods=['DELETE'])
+@login_required
+def delete_order(order_id):
+    if not current_user.is_admin:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    order = Order.query.get_or_404(order_id)
+    db.session.delete(order)
+    db.session.commit()
+
+    return jsonify({'message': 'Narudžba uspješno izbrisana.'}), 200

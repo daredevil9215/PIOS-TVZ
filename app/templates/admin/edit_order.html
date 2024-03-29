@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{{ url_for('admin.view_orders') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Narudžbe</a>
+    <div class="container mt-8 flex justify-center">
+        <div class="w-full max-w-md">
+            <h1 class="text-2xl font-semibold mb-4 text-center">Uredi Narudžbu</h1>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="flex justify-between">
+        <h1 class="text-3xl font-bold mb-4">Narudžbe</h1>
+    </div>
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-gray-200 text-gray-700">
+            <tr>
+                <th class="py-3 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left">Korisničko ime</th>
+                <th class="py-3 px-4 text-left">Iznos</th>
+                <th class="py-3 px-4 text-left">Naručene karte</th>
+                <th class="py-3 px-4 text-left">Način plaćanja</th>
+                <!-- <th class="py-3 px-4 text-left">Vrijeme narudžbe</th> -->
+                <th class="py-3 px-4 text-left">Akcije</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+            {% for order in pagination.items %}
+            <tr class="text-black">
+                <td class="py-3 px-4">{{ order.id }}</td>
+                <td class="py-3 px-4">{{ order.user.username }}</td>
+                <td class="py-3 px-4">{{ order.total_amount }} €</td>
+                <td class="py-3 px-4">
+                    <ul>
+                        {% for order_ticket in order.order_tickets %}
+                            <li>{{ order_ticket.ticket.name }} - Količina: {{ order_ticket.quantity }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td class="py-3 px-4">{{ order.payment_method }}</td>
+                <!-- <td class="py-3 px-4">[TODO] Vrijeme</td> -->
+                <td class="py-3 px-4">
+                    <!-- <a href="{{ url_for('admin.edit_order', order_id=order.id) }}" class="text-blue-500 hover:text-blue-700 mr-2">Uredi</a> -->
+                    <a href="" onclick="deleteOrder({{ order.id }})" class="text-red-500 hover:text-red-700">Izbriši</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination flex justify-center space-x-4">
+                {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.view_orders', page=pagination.prev_num, per_page=pagination.per_page) }}">Prethodna</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Prethodna</span>
+                    </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                            <li class="font-bold page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin.view_orders', page=page_num, per_page=pagination.per_page) }}">{{ page_num }}</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.view_orders', page=pagination.next_num, per_page=pagination.per_page) }}">Sljedeća</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Sljedeća</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <div>
+            <span class="text-white-700">Prikaži:</span>
+            <select class="ml-2 border px-2 py-1 text-black" onchange="location = this.value;">
+                <option value="{{ url_for('admin.view_orders', per_page=5) }}" {% if pagination.per_page == 5 %} selected {% endif %}>5</option>
+                <option value="{{ url_for('admin.view_orders', per_page=10) }}" {% if pagination.per_page == 10 %} selected {% endif %}>10</option>
+                <option value="{{ url_for('admin.view_orders', per_page=20) }}" {% if pagination.per_page == 20 %} selected {% endif %}>20</option>
+                <option value="{{ url_for('admin.view_orders', per_page=30) }}" {% if pagination.per_page == 30 %} selected {% endif %}>30</option>
+            </select>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function deleteOrder(orderId) {
+            if (confirm("Jeste li sigurni da želite izbrisati narudžbu?")) {
+                fetch(`/admin/delete_order/${orderId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Brisanje narudžbe neuspješno.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    // Refresh the page or update the order list as needed
+                    location.reload()
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Dogodila se greška prilikom brisanja narudžbe.');
+                });
+            }
+        }
+    </script>
+{% endblock %}
