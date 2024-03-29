@@ -2,8 +2,40 @@
 
 {% block content %}
   {% if user == current_user %}
-  <h1>Korisnik: {{ current_user.username }}</h1>
-  <p>Stanje računa: <b>?kn</b></p>
-  <p><a href="{{ url_for('main.edit_profile') }}">Uredi Profil</a></p>
+    <div class="flex justify-between">
+        <h1 class="text-3xl font-bold mb-4">Moj profil</h1>
+        <a href="{{ url_for('main.edit_profile') }}" class="inline-block mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 mb-2">Uredi Profil</a>
+    </div>
+    <h1 class="text-2xl font-semibold mb-4 font-bold text-white-700">Ime: {{ current_user.firstname }}</h1>
+    <h1 class="text-2xl font-semibold mb-4 font-bold text-white-700">Prezime: {{ current_user.lastname }}</h1>
+    <h1 class="text-2xl font-semibold mb-4 font-bold text-white-700">Korisničko ime: {{ current_user.username }}</h1>
+    <h1 class="text-2xl font-semibold mb-4 font-bold text-white-700">Stanje računa: {{ current_user.balance }} €</h1>
+    <hr>
+    <br>
+    <h1 class="text-2xl font-semibold mb-4 font-bold text-white-700">Narudžbe</h1>
+    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <thead class="bg-gray-200 text-gray-700">
+            <tr>
+                <th class="py-3 px-4 text-left">Iznos</th>
+                <th class="py-3 px-4 text-left">Naručene karte</th>
+                <th class="py-3 px-4 text-left">Način plaćanja</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+            {% for order in orders %}
+            <tr class="text-black">
+                <td class="py-3 px-4">{{ order.total_amount }} €</td>
+                <td class="py-3 px-4">
+                    <ul>
+                        {% for order_ticket in order.order_tickets %}
+                            <li>{{ order_ticket.ticket.name }} - Količina: {{ order_ticket.quantity }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td class="py-3 px-4">{{ order.payment_method }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
   {% endif %}
 {% endblock %}

@@ -27,7 +27,8 @@ def search_tickets():
 @login_required
 def profile(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
-    return render_template('profile.html', title='Moj profil', user=user)
+    orders = Order.query.filter_by(user_id=current_user.id).all()
+    return render_template('profile.html', title='Moj profil', user=user, order=orders)
 
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
