@@ -73,6 +73,15 @@ def add_to_cart():
         flash('Karta nije pronađena.', 'error')
         return jsonify({'success': False})
 
+    available_tickets = ticket.total_seats - ticket.reserved_seats
+
+    if quantity > available_tickets:
+        flash('Nema dovoljno karata.', 'error')
+        return jsonify({'success': True, 'redirect_url': url_for('main.index')})
+
+    ticket.reserved_seats = ticket.reserved_seats + quantity
+    db.session.commit()
+
     cart = session.get('cart', {})
     cart[ticket_id] = {'name': ticket.name,
                        'price': ticket.price, 'quantity': quantity}
@@ -84,11 +93,18 @@ def add_to_cart():
 
 @ bp.route('/update_cart/<item_id>', methods=['POST'])
 def update_cart(item_id):
+    ticket = Ticket.query.get(item_id)
+    available_tickets = ticket.total_seats - ticket.reserved_seats
     new_quantity = int(request.form['quantity'])
     cart_items = session.get('cart', {})
     if item_id in cart_items:
         cart_items[item_id]['quantity'] = new_quantity
         session['cart'] = cart_items
+        if new_quantity > available_tickets:
+            flash('Nema dovoljno karata.', 'error')
+            return redirect(url_for('main.index'))
+        ticket.reserved_seats = ticket.reserved_seats + new_quantity
+        db.session.commit()
         flash('Košarica je ažurirana.', 'success')
         return redirect(url_for('main.view_cart'))
     else:
