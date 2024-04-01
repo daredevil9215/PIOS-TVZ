@@ -4,7 +4,7 @@
     <div class="container mt-8 flex justify-center">
         <div class="w-full max-w-md">
             <h1 class="text-2xl font-semibold mb-4 text-center">Uredi Profil</h1>
-            <form action="{{ url_for('main.edit_profile', username=current_user.username) }}" method="post">
+            <form action="{{ url_for('main.edit_profile') }}" method="post">
                 {{ form.hidden_tag() }}
                 <div class="">
                     {{ form.firstname.label(class="font-bold text-white-700") }}<br>

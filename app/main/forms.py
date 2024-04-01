@@ -21,9 +21,6 @@ class EditProfileForm(FlaskForm):
     balance = FloatField('Stanje računa',
                          validators=[DataRequired(message="Stanje računa je obavezno."),
                                      NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
-    balance = FloatField('Stanje računa',
-                         validators=[DataRequired(message="Stanje računa je obavezno."),
-                                     NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
     submit = SubmitField('Spremi')
 
     def __init__(self, original_username, *args, **kwargs):

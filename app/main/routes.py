@@ -34,10 +34,11 @@ def profile(username):
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm(current_user.username)
+    form = EditProfileForm(
+        obj=current_user, original_username=current_user.username)
     if form.validate_on_submit():
-        current_user.firstname = form.username.data
-        current_user.lastname = form.username.data
+        current_user.firstname = form.firstname.data
+        current_user.lastname = form.lastname.data
         current_user.username = form.username.data
         current_user.balance = form.balance.data
         db.session.commit()
@@ -50,7 +51,7 @@ def edit_profile():
     return render_template('edit_profile.html', title='Uredi Profil', form=form)
 
 
-@bp.route('/cart', methods=['GET'])
+@ bp.route('/cart', methods=['GET'])
 def view_cart():
     cart = session.get('cart', {})
     total_amount = sum(item['price'] * item['quantity']
@@ -58,7 +59,7 @@ def view_cart():
     return render_template('cart.html', cart=cart, total_amount=total_amount)
 
 
-@bp.route('/add-to-cart', methods=['POST'])
+@ bp.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
     ticket_id = request.form.get('ticket_id')
     # default 1 if not provided
@@ -81,7 +82,7 @@ def add_to_cart():
     return jsonify({'success': True, 'redirect_url': url_for('main.index')})
 
 
-@bp.route('/update_cart/<item_id>', methods=['POST'])
+@ bp.route('/update_cart/<item_id>', methods=['POST'])
 def update_cart(item_id):
     new_quantity = int(request.form['quantity'])
     cart_items = session.get('cart', {})
@@ -95,7 +96,7 @@ def update_cart(item_id):
         return redirect(url_for('main.view_cart'))
 
 
-@bp.route('/remove_from_cart/<item_id>', methods=['POST'])
+@ bp.route('/remove_from_cart/<item_id>', methods=['POST'])
 def remove_from_cart(item_id):
     cart = session.get('cart', [])
     for item_id in cart:
@@ -106,8 +107,8 @@ def remove_from_cart(item_id):
     return redirect(url_for('main.view_cart'))
 
 
-@bp.route('/checkout', methods=['GET'])
-@login_required
+@ bp.route('/checkout', methods=['GET'])
+@ login_required
 def checkout():
     cart = session.get('cart', {})
     total_amount = sum(item['price'] * item['quantity']
@@ -119,8 +120,8 @@ def checkout():
     return render_template('checkout.html', user_balance=user_balance, total_amount=total_amount, cart=cart)
 
 
-@bp.route('/process_payment', methods=['POST'])
-@login_required
+@ bp.route('/process_payment', methods=['POST'])
+@ login_required
 def process_payment():
     user_balance = current_user.balance
     cart = session.get('cart', {})
