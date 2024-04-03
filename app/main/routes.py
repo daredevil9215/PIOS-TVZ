@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, session
+from flask import render_template, flash, redirect, url_for, request, jsonify, session, send_from_directory
 from flask_login import current_user, login_required
 from app import db
 from app.models import User, Ticket, Order, OrderTicket
@@ -6,11 +6,27 @@ from app.main import bp
 from app.main.forms import EditProfileForm
 import sqlalchemy as sa
 
+"""
+    Render the index page.
+
+    This function renders the index page of the application.
+
+    :return: HTML content of the index page.
+    """
+
 
 @bp.route('/')
 def index():
     tickets = Ticket.query.all()
     return render_template('index.html', title='Početna', tickets=tickets)
+
+    """
+    Render the search page.
+
+    This function renders the search page of the application.
+
+    :return: HTML content of the search page.
+    """
 
 
 @bp.route('/search', methods=['POST'])
@@ -22,6 +38,14 @@ def search_tickets():
         Ticket.name.ilike(f"%{search_query}%")).all()
     return render_template('search_results.html', tickets=tickets, search_query=search_query)
 
+    """
+    Render the profile page.
+
+    This function renders the profile page of the application.
+
+    :return: HTML content of the profile page.
+    """
+
 
 @bp.route('/profile/<username>')
 @login_required
@@ -29,6 +53,14 @@ def profile(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('profile.html', title='Moj profil', user=user, orders=orders)
+
+    """
+    Render the edit profile page.
+
+    This function renders the edit profile page of the application.
+
+    :return: HTML content of the edit profile page.
+    """
 
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
@@ -49,6 +81,14 @@ def edit_profile():
         form.balance.data = current_user.balance
 
     return render_template('edit_profile.html', title='Uredi Profil', form=form)
+
+    """
+    Render the cart page.
+
+    This function renders the cart page of the application.
+
+    :return: HTML content of the cart page.
+    """
 
 
 @ bp.route('/cart', methods=['GET'])
@@ -168,3 +208,8 @@ def process_payment():
     else:
         flash('Nemate dovoljno sredstava na računu.', 'error')
     return redirect(url_for('main.index'))
+
+
+@bp.route('/docs/<path:path>')
+def serve_docs(path):
+    return send_from_directory('docs/_build/html', path)
