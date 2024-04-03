@@ -83,6 +83,9 @@ def add_to_cart():
     db.session.commit()
 
     cart = session.get('cart', {})
+    if ticket_id in cart.keys():
+        if cart[ticket_id]['quantity']:
+            quantity = quantity + cart[ticket_id]['quantity']
     cart[ticket_id] = {'name': ticket.name,
                        'price': ticket.price, 'quantity': quantity}
     session['cart'] = cart
@@ -112,12 +115,17 @@ def update_cart(item_id):
         return redirect(url_for('main.view_cart'))
 
 
-@ bp.route('/remove_from_cart/<item_id>', methods=['POST'])
-def remove_from_cart(item_id):
+@ bp.route('/remove_from_cart/<id>', methods=['POST'])
+def remove_from_cart(id):
     cart = session.get('cart', [])
     for item_id in cart:
-        del cart[item_id]
-        break
+        if item_id == id:
+            ticket = Ticket.query.get(item_id)
+            ticket.reserved_seats = ticket.reserved_seats - \
+                cart[item_id]['quantity']
+            db.session.commit()
+            del cart[item_id]
+            break
     session['cart'] = cart
     flash('Karta izbrisana iz košarice', 'success')
     return redirect(url_for('main.view_cart'))
