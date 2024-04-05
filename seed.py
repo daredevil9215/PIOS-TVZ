@@ -5,6 +5,9 @@ app = create_app()
 
 
 def seed_users():
+    """
+    Function for creating example users in the database.
+    """
     users = [
         User(firstname="admin", lastname="admin", username="admin1",
              password_hash="pbkdf2:sha256:600000$WLlhsm1tjmmTKiYA$b6b8e134385f41950091bdea0244b6258a092cfb45174df8ad321baa2db649c3", is_admin=1, balance=0),
@@ -17,6 +20,9 @@ def seed_users():
 
 
 def seed_tickets():
+    """
+    Function for creating example tickets in the database.
+    """
     tickets = [
         Ticket(city="Zagreb", name="231 BORONGAJ - DUBEC",
                route="BORONGAJ - DUBEC", total_seats=100, reserved_seats=0, price=1.00),
