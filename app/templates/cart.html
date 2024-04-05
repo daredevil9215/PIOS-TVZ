@@ -28,7 +28,7 @@
                 <form action="/update_cart/{{ item_id }}" method="POST" class="mr-2">
                     <div class="flex items-center">
                         <label for="quantity-{{ item_id }}" class="mr-2">Količina:</label>
-                        <input type="number" value="{{ item_info.get('quantity', 0) }}" id="quantity-{{ item_id }}" name="quantity" value="{{ item_info.get('quantity', 0) }}" min="0" class="w-16 px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mr-2 text-black">
+                        <input type="number" value="{{ item_info.get('quantity', 0) }}" id="quantity-{{ item_id }}" name="quantity" value="{{ item_info.get('quantity', 0) }}" min="1" class="w-16 px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mr-2 text-black">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-2 rounded-md transition-colors duration-300">Ažuriraj</button>
                     </div>
                 </form>
