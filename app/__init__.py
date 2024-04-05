@@ -29,7 +29,4 @@ def create_app(config_class=Config):
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
-    from app.api import bp as api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
-
     return app
