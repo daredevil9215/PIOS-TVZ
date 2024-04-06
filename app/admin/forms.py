@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FloatField, IntegerField, BooleanField, RadioField, PasswordField, SelectField, FieldList, FormField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange, Optional
+from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange, Optional, Email
 import sqlalchemy as sa
 from app import db
 from app.models import User, Order, OrderTicket
@@ -33,6 +33,7 @@ class UserForm(FlaskForm):
     password2 = PasswordField(
         'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
     )
+    email = StringField('Email', validators=[DataRequired(), Email()])
     balance = FloatField('Stanje računa',
                          validators=[DataRequired(message="Stanje računa je obavezno."),
                                      NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
@@ -73,3 +74,12 @@ class EditOrderForm(FlaskForm):
             form.ticket_name.data = ordered_ticket.ticket.name
             form.quantity.data = ordered_ticket.quantity
             self.ordered_tickets.append_entry(form)
+
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField('Lozinka', validators=[
+                             DataRequired("Lozinka je obavezna.")])
+    password2 = PasswordField(
+        'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
+    )
+    submit = SubmitField('Spremi')

@@ -2,8 +2,7 @@ from flask import render_template, flash, redirect, url_for, abort, request
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from app.auth import bp
-from app.auth.forms import LoginForm, RegistrationForm, \
-    ResetPasswordRequestForm, ResetPasswordForm
+from app.auth.forms import LoginForm, RegistrationForm
 from app.models import User
 import sqlalchemy as sa
 
@@ -18,10 +17,10 @@ def login():
             sa.select(User).where(User.username == form.username.data)
         )
         if user is None or not user.check_password(form.password.data):
-            flash('Pogrešan username ili password')
+            flash('Pogrešan username ili password', 'error')
             return redirect(url_for('auth.login'))
         flash('Korisnik {} prijavljen, zapamti={}'.format(
-            form.username.data, form.remember_me.data))
+            form.username.data, form.remember_me.data), 'success')
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('main.index'))
     return render_template('login.html', title='Prijava', form=form)
@@ -33,11 +32,12 @@ def register():
         return redirect(url_for('main.index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(firstname=form.firstname.data, lastname=form.lastname.data, username=form.username.data, is_admin=False, balance=0)
+        user = User(firstname=form.firstname.data, lastname=form.lastname.data,
+                    email=form.email.data, username=form.username.data, is_admin=False, balance=0)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Čestitamo, sada ste registrirani korisnik!')
+        flash('Čestitamo, sada ste registrirani korisnik!', 'success')
         return redirect(url_for('auth.login'))
     return render_template('register.html', title='Registracija', form=form)
 

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FloatField, PasswordField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange
+from wtforms.validators import ValidationError, DataRequired, EqualTo, NumberRange, Email
 import sqlalchemy as sa
 from app import db
 from app.models import User
@@ -13,6 +13,7 @@ class EditProfileForm(FlaskForm):
                            DataRequired(message="Prezime je obavezno.")])
     username = StringField('Korisničko ime', validators=[
                            DataRequired(message="Korisničko ime je obavezno.")])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     balance = FloatField('Stanje računa',
                          validators=[DataRequired(message="Stanje računa je obavezno."),
                                      NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
@@ -28,3 +29,12 @@ class EditProfileForm(FlaskForm):
                 User.username == self.username.data))
             if user is not None:
                 raise ValidationError('Molimo koristite drugo korisničko ime.')
+
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField('Lozinka', validators=[
+                             DataRequired("Lozinka je obavezna.")])
+    password2 = PasswordField(
+        'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
+    )
+    submit = SubmitField('Spremi')

@@ -22,6 +22,7 @@ class RegistrationForm(FlaskForm):
                            DataRequired(message="Prezime je obavezno.")])
     username = StringField('Korisničko Ime', validators=[
                            DataRequired(message="Korisničko ime je obavezno.")])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Lozinka', validators=[
                              DataRequired("Lozinka je obavezna.")])
     password2 = PasswordField(
@@ -35,16 +36,3 @@ class RegistrationForm(FlaskForm):
         ))
         if user is not None:
             raise ValidationError('Molimo koristite drugo korisničko ime')
-
-
-class ResetPasswordRequestForm(FlaskForm):
-    email = StringField(('Email'), validators=[DataRequired(), Email()])
-    submit = SubmitField(('Request Password Reset'))
-
-
-class ResetPasswordForm(FlaskForm):
-    password = PasswordField(('Password'), validators=[DataRequired()])
-    password2 = PasswordField(
-        ('Repeat Password'), validators=[DataRequired(),
-                                         EqualTo('password')])
-    submit = SubmitField(('Request Password Reset'))

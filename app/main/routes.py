@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from app import db
 from app.models import User, Ticket, Order, OrderTicket
 from app.main import bp
-from app.main.forms import EditProfileForm
+from app.main.forms import EditProfileForm, ChangePasswordForm
 import sqlalchemy as sa
 
 """
@@ -71,6 +71,7 @@ def edit_profile():
     if form.validate_on_submit():
         current_user.firstname = form.firstname.data
         current_user.lastname = form.lastname.data
+        current_user.email = form.email.data
         current_user.username = form.username.data
         current_user.balance = form.balance.data
         db.session.commit()
@@ -81,6 +82,20 @@ def edit_profile():
         form.balance.data = current_user.balance
 
     return render_template('edit_profile.html', title='Uredi Profil', form=form)
+
+
+@bp.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user = db.session.query(User).filter(
+            User.username == current_user.username).first()
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Lozinka je promjenjena.', 'success')
+        return redirect(url_for('main.profile', username=current_user.username))
+    return render_template('change_password.html', title='Promjeni Lozinku', form=form)
 
     """
     Render the cart page.
@@ -141,11 +156,11 @@ def update_cart(item_id):
     new_quantity = int(request.form['quantity'])
     cart_items = session.get('cart', {})
     if item_id in cart_items:
-        cart_items[item_id]['quantity'] = new_quantity
-        session['cart'] = cart_items
         if new_quantity > available_tickets:
             flash('Nema dovoljno karata.', 'error')
-            return redirect(url_for('main.index'))
+            return redirect(url_for('main.view_cart'))
+        cart_items[item_id]['quantity'] = new_quantity
+        session['cart'] = cart_items
         ticket.reserved_seats = ticket.reserved_seats + new_quantity
         db.session.commit()
         flash('Košarica je ažurirana.', 'success')
@@ -207,6 +222,10 @@ def process_payment():
             db.session.add(order_ticket)
         db.session.commit()
         session.pop('cart', None)
+        from app.email import send_order_successful_email
+        user = db.session.query(User).filter(
+            User.username == current_user.username).first()
+        send_order_successful_email(user, order)
         flash('Plaćanje uspješno!', 'success')
     else:
         flash('Nemate dovoljno sredstava na računu.', 'error')
