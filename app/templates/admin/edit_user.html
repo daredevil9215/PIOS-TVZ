@@ -35,20 +35,9 @@
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                 </div>
-                <div class="">
-                    {{ form.password.label(class="font-bold text-white-700") }}<br>
-                    {{ form.password(size=32, class="form-input mt-1 block w-full rounded-lg text-gray-800 text-lg h-10") }}<br>
-                    {% for error in form.password.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </div>
-                <div class="">
-                    {{ form.password2.label(class="font-bold text-white-700") }}<br>
-                    {{ form.password2(size=32, class="form-input mt-1 block w-full rounded-lg text-gray-800 text-lg h-10") }}<br>
-                    {% for error in form.password2.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </div>
+                <a href="{{ url_for('admin.change_password', user_id=user.id) }}" class="mr-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Promjeni Lozinku</a>
+                <br>
+                <br>
                 <div class="flex justify-between">
                     <div class="">
                         <div class="flex items-center">

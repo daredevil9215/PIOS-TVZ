@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_args
 from app import db
 from app.admin import bp
-from app.admin.forms import TicketForm, UserForm, EditOrderForm
+from app.admin.forms import TicketForm, UserForm, EditOrderForm, ChangePasswordForm
 from app.models import Ticket, Order, User
 
 
@@ -72,6 +72,22 @@ def edit_user(user_id):
         return redirect(url_for('admin.edit_user', user_id=user_id))
 
     return render_template('admin/edit_user.html', form=form, user=user)
+
+
+@bp.route('/edit_user/<int:user_id>/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password(user_id):
+    if not current_user.is_admin:
+        return jsonify({'message': 'Unauthorized'}), 401
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user = db.session.query(User).filter(
+            User.id == user_id).first()
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Lozinka je promjenjena.', 'success')
+        return redirect(url_for('admin.edit_user', user_id=user_id))
+    return render_template('admin/change_password.html', title='Promjeni Lozinku', form=form, user_id=user_id)
 
 
 @bp.route('/delete_user/<int:user_id>', methods=['DELETE'])

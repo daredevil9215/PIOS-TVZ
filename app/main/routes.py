@@ -88,8 +88,6 @@ def edit_profile():
 @login_required
 def change_password():
     form = ChangePasswordForm()
-    print(f"is_submitted: {form.is_submitted()}")
-    print(f"is_validated: {form.validate()}")
     if form.validate_on_submit():
         user = db.session.query(User).filter(
             User.username == current_user.username).first()

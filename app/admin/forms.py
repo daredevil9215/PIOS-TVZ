@@ -74,3 +74,12 @@ class EditOrderForm(FlaskForm):
             form.ticket_name.data = ordered_ticket.ticket.name
             form.quantity.data = ordered_ticket.quantity
             self.ordered_tickets.append_entry(form)
+
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField('Lozinka', validators=[
+                             DataRequired("Lozinka je obavezna.")])
+    password2 = PasswordField(
+        'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
+    )
+    submit = SubmitField('Spremi')
