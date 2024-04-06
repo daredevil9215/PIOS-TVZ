@@ -193,7 +193,7 @@ def process_payment():
     payment_method = request.form.get('payment_method')
     if total_amount <= user_balance:
         user_balance = user_balance - total_amount
-        user = db.session.query(User).filter(
+        db.session.query(User).filter(
             User.username == current_user.username).update({"balance": user_balance})
         order = Order(user_id=current_user.id,
                       total_amount=total_amount, payment_method=payment_method)
