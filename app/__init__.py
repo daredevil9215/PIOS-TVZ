@@ -32,10 +32,7 @@ def create_app(config_class=Config):
     from app.admin import bp as admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
-    print("test1")
-    print(app.config)
     if app.config['MAIL_SERVER']:
-        print("test2")
         auth = None
         if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
             auth = (app.config['MAIL_USERNAME'],

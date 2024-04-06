@@ -8,7 +8,9 @@ blinker==1.7.0
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
+dnspython==2.6.1
 docutils==0.20.1
+email_validator==2.1.1
 Flask==2.3.3
 Flask-BabelEx==0.9.4
 Flask-Login==0.6.3

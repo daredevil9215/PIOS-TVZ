@@ -42,7 +42,7 @@ def add_user():
     if form.validate_on_submit():
         is_admin = request.form.get('is_admin') == 'True'
         user = User(firstname=form.firstname.data, lastname=form.lastname.data,
-                    username=form.username.data, balance=form.balance.data, is_admin=is_admin)
+                    email=form.email.data, username=form.username.data, balance=form.balance.data, is_admin=is_admin)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
