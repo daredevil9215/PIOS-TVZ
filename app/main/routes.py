@@ -207,6 +207,10 @@ def process_payment():
             db.session.add(order_ticket)
         db.session.commit()
         session.pop('cart', None)
+        from app.email import send_order_successful_email
+        user = db.session.query(User).filter(
+            User.username == current_user.username).first()
+        send_order_successful_email(user, order)
         flash('Plaćanje uspješno!', 'success')
     else:
         flash('Nemate dovoljno sredstava na računu.', 'error')

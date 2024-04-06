@@ -1,0 +1,9 @@
+Poštovani {{ user.firstname }} {{ user.lastname }},
+
+Potvrđujemo primitak narudžbe:
+Korisnik: {{ user.username }}
+
+Ukupno: {{ order.total_amount }} €
+
+Zahvaljujemo se na suradnji,
+TIM09
