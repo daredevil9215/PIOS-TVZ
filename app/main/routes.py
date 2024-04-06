@@ -189,7 +189,8 @@ def checkout():
 def process_payment():
     user_balance = current_user.balance
     cart = session.get('cart', {})
-    total_amount = sum(item['price'] for item in cart.values())
+    total_amount = sum(item['price'] * item['quantity']
+                       for item in cart.values())
     payment_method = request.form.get('payment_method')
     if total_amount <= user_balance:
         user_balance = user_balance - total_amount
