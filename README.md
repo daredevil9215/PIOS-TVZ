@@ -27,6 +27,9 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 flask run
 
+Run the following commands to start the mail server (on Ubuntu):
+aiosmtpd -n -c aiosmtpd.handlers.Debugging -l localhost:8025
+
 * Running on http://127.0.0.1:5000
 
 Check documentation in docs folder or using the following link if the application is running: http://127.0.0.1:5000/docs

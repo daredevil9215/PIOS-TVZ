@@ -7,9 +7,10 @@ Welcome to TIM09-App's documentation!
 =====================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
    installation
    usage
    db_functions
+   db_models
