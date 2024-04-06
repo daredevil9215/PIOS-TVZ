@@ -37,8 +37,8 @@ class Ticket(db.Model):
     total_seats = db.Column(db.Integer, nullable=False, default=0)
     reserved_seats = db.Column(db.Integer, nullable=False, default=0)
     price = db.Column(db.Float, nullable=False)
-    orders = db.relationship(
-        'Order', secondary='order_ticket', backref='tickets', lazy=True)
+    order_tickets = db.relationship(
+        'OrderTicket', backref='ticket', overlaps="orders,ticket")
     # cart_items = db.relationship('CartItem', backref='ticket', lazy=True)
 
 
@@ -48,9 +48,10 @@ class Order(db.Model):
     total_amount = db.Column(db.Float, nullable=False)
     payment_method = db.Column(
         db.String(20), nullable=False)
+
     user = db.relationship('User', backref='orders')
     order_tickets = db.relationship(
-        'OrderTicket', backref='order', cascade='all, delete-orphan')
+        'OrderTicket', backref='order', cascade='all, delete-orphan', overlaps="orders,ticket")
 
 
 class OrderTicket(db.Model):
@@ -59,7 +60,9 @@ class OrderTicket(db.Model):
     ticket_id = db.Column(db.Integer, db.ForeignKey(
         'ticket.id'), primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
-    ticket = db.relationship('Ticket')
+    __table_args__ = (
+        db.PrimaryKeyConstraint('order_id', 'ticket_id'),
+    )
 
 
 class CartItem(db.Model):
