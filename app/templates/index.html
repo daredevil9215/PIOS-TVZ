@@ -10,7 +10,7 @@
             <p>Ukupno: {{ ticket.total_seats }}</p>
             <p class="text-green-500 font-bold text-lg mb-2">Cijena: {{ ticket.price }} €</p>
             <label for="quantity-{{ ticket.id }}" class="mb-2">Količina: </label>
-            <input type="number" class="w-24 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mb-4 text-black" id="quantity-{{ ticket.id }}" name="quantity" value="1" min="1" max={{ ticket.total_seats - ticket.reserved_seats }}>
+            <input type="number" pattern="\d+" class="w-24 px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mb-4 text-black" id="quantity-{{ ticket.id }}" name="quantity" value="1" min="1" step="1">
             <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300" data-ticket-id="{{ ticket.id }}">Dodaj u košaricu</button>
         </div>
         {% endfor %}
@@ -20,11 +20,13 @@
         $('.add-to-cart').click(function() {
           let ticketId = $(this).data('ticket-id')
           let quantity = $('#quantity-' + ticketId).val()
-          $.post('/add-to-cart', { ticket_id: ticketId, quantity: quantity }, function(response) {
-            if (response.success) {
-              window.location.href = response.redirect_url; // Redirect to homepage
-            }
+          if (quantity > 0) {
+            $.post('/add-to-cart', { ticket_id: ticketId, quantity: quantity }, function(response) {
+              if (response.success) {
+                window.location.href = response.redirect_url; // Redirect to homepage
+              }
           })
+          }
         })
       })
     </script>

@@ -16,6 +16,10 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    firstname = StringField('Ime', validators=[
+        DataRequired(message="Ime je obavezno.")])
+    lastname = StringField('Prezime', validators=[
+                           DataRequired(message="Prezime je obavezno.")])
     username = StringField('Korisničko Ime', validators=[
                            DataRequired(message="Korisničko ime je obavezno.")])
     password = PasswordField('Lozinka', validators=[
@@ -42,5 +46,5 @@ class ResetPasswordForm(FlaskForm):
     password = PasswordField(('Password'), validators=[DataRequired()])
     password2 = PasswordField(
         ('Repeat Password'), validators=[DataRequired(),
-                                           EqualTo('password')])
+                                         EqualTo('password')])
     submit = SubmitField(('Request Password Reset'))

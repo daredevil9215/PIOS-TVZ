@@ -13,11 +13,6 @@ class EditProfileForm(FlaskForm):
                            DataRequired(message="Prezime je obavezno.")])
     username = StringField('Korisničko ime', validators=[
                            DataRequired(message="Korisničko ime je obavezno.")])
-    password = PasswordField('Lozinka', validators=[
-                             DataRequired("Lozinka je obavezna.")])
-    password2 = PasswordField(
-        'Ponovi Lozinku', validators=[DataRequired("Lozinka je obavezna."), EqualTo('password')]
-    )
     balance = FloatField('Stanje računa',
                          validators=[DataRequired(message="Stanje računa je obavezno."),
                                      NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
