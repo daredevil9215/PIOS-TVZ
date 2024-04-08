@@ -52,7 +52,7 @@
                       <input type="text" name="search_query" placeholder="Pretraživanje" class="w-64 px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-400 mr-2 text-black">
                       <button type="submit" class="text-white mr-4 {{ 'font-bold' if '/search' in request.path else '' }}">Pretraži</button>
                   </form>
-                  <a href="{{ url_for('main.view_cart') }}" class="text-white mr-4 {{ 'font-bold' if '/cart' in request.path else '' }}">
+                  <a id="cart" href="{{ url_for('main.view_cart') }}" class="text-white mr-4 {{ 'font-bold' if '/cart' in request.path else '' }}">
                     Košarica
                     {% if 'cart' in session %}
                         <span class="bg-yellow-500 text-black rounded-full px-2">{{ session['cart']|length }}</span>
@@ -61,13 +61,13 @@
                     {% endif %}
                   </a>
                   {% if current_user.is_anonymous %}
-                  <a href="{{ url_for('auth.login') }}" class="text-white mr-4 {{ 'font-bold' if request.path == '/auth/login' else '' }}">Prijava</a>
+                  <a href="{{ url_for('auth.login') }}" class="text-white mr-4 {{ 'font-bold' if request.path == '/auth/login' else '' }}" id="prijava">Prijava</a>
                   {% else %}
-                    <a href="{{ url_for('main.profile', username=current_user.username) }}" class="text-white mr-4 {{ 'font-bold' if '/profile' in request.path else '' }}">Moj profil</a>
+                    <a id="profil" href="{{ url_for('main.profile', username=current_user.username) }}" class="text-white mr-4 {{ 'font-bold' if '/profile' in request.path else '' }}">Moj profil</a>
                     {% if current_user.is_admin %}
                     <a href="{{ url_for('admin.dashboard') }}" class="text-white mr-4 {{ 'font-bold' if '/admin' in request.path else '' }}">Administracija</a>
                     {% endif %}
-                    <a href="{{ url_for('auth.logout') }}" class="text-white mr-4">Odjava</a>
+                    <a href="{{ url_for('auth.logout') }}" class="text-white mr-4" id="odjava">Odjava</a>
                   {% endif %}
               </div>
           </div>
