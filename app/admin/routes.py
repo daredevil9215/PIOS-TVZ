@@ -4,7 +4,7 @@ from flask_paginate import Pagination, get_page_args
 from app import db
 from app.admin import bp
 from app.admin.forms import TicketForm, AddUserForm, EditUserForm, EditOrderForm, ChangePasswordForm
-from app.models import Ticket, Order, User
+from app.models import Ticket, Order, User, OrderTicket
 
 
 @bp.route('/')

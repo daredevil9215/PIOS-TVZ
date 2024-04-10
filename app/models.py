@@ -19,6 +19,9 @@ class User(UserMixin, db.Model):
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     is_admin = db.Column(db.Boolean(), default=False)
     balance = db.Column(db.Float, nullable=False)
+    balance = db.Column(db.Float, nullable=False)
+    user_orders = db.relationship(
+        'Order', backref='order', cascade='all, delete-orphan')
 
     @login.user_loader
     def load_user(id):
@@ -51,7 +54,6 @@ class Order(db.Model):
     payment_method = db.Column(
         db.String(20), nullable=False)
 
-    user = db.relationship('User', backref='orders')
     order_tickets = db.relationship(
         'OrderTicket', backref='order', cascade='all, delete-orphan', overlaps="orders,ticket")
 
