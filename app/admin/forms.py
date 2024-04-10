@@ -21,7 +21,28 @@ class TicketForm(FlaskForm):
     submit = SubmitField('Spremi Promjene')
 
 
-class UserForm(FlaskForm):
+class OrderedTicketForm(FlaskForm):
+    ticket_name = StringField('Ticket Name', render_kw={'readonly': True})
+    quantity = IntegerField('Quantity', validators=[
+                            DataRequired(), NumberRange(min=1)])
+
+
+class EditOrderForm(FlaskForm):
+    payment_method = SelectField('Payment Method', choices=[(
+        'gotovina', 'Gotovina'), ('kartica', 'Kartica')], validators=[DataRequired()])
+    ordered_tickets = FieldList(FormField(OrderedTicketForm), min_entries=1)
+    submit = SubmitField('Update')
+
+    def populate_from_model(self, order):
+        self.payment_method.data = order.payment_method
+        for ordered_ticket in order.order_tickets:
+            form = OrderedTicketForm()
+            form.ticket_name.data = ordered_ticket.ticket.name
+            form.quantity.data = ordered_ticket.quantity
+            self.ordered_tickets.append_entry(form)
+
+
+class AddUserForm(FlaskForm):
     firstname = StringField('Ime', validators=[
         DataRequired(message="Ime je obavezno.")])
     lastname = StringField('Prezime', validators=[
@@ -42,7 +63,7 @@ class UserForm(FlaskForm):
     submit = SubmitField('Spremi')
 
     def __init__(self, *args, **kwargs):
-        super(UserForm, self).__init__(*args, **kwargs)
+        super(AddUserForm, self).__init__(*args, **kwargs)
         self.original_username = kwargs.get(
             'obj').username if kwargs.get('obj') else None
 
@@ -55,25 +76,33 @@ class UserForm(FlaskForm):
             raise ValidationError('Molimo koristite drugo korisničko ime.')
 
 
-class OrderedTicketForm(FlaskForm):
-    ticket_name = StringField('Ticket Name', render_kw={'readonly': True})
-    quantity = IntegerField('Quantity', validators=[
-                            DataRequired(), NumberRange(min=1)])
+class EditUserForm(FlaskForm):
+    firstname = StringField('Ime', validators=[
+        DataRequired(message="Ime je obavezno.")])
+    lastname = StringField('Prezime', validators=[
+                           DataRequired(message="Prezime je obavezno.")])
+    username = StringField('Korisničko ime', validators=[
+                           DataRequired(message="Korisničko ime je obavezno.")])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    balance = FloatField('Stanje računa',
+                         validators=[DataRequired(message="Stanje računa je obavezno."),
+                                     NumberRange(min=0, max=float('inf'), message='Stanje računa ne smije biti negativno.')])
+    is_admin = RadioField(
+        'Admin', choices=[(True, 'Da'), (False, 'Ne')], coerce=bool, default=False)
+    submit = SubmitField('Spremi')
 
+    def __init__(self, *args, **kwargs):
+        super(EditUserForm, self).__init__(*args, **kwargs)
+        self.original_username = kwargs.get(
+            'obj').username if kwargs.get('obj') else None
 
-class EditOrderForm(FlaskForm):
-    payment_method = SelectField('Payment Method', choices=[(
-        'gotovina', 'Gotovina'), ('kartica', 'Kartica')], validators=[DataRequired()])
-    ordered_tickets = FieldList(FormField(OrderedTicketForm), min_entries=1)
-    submit = SubmitField('Update')
+    def validate_username(self, field):
+        if field.data == self.original_username:
+            return  # Skip validation if username is not changed
 
-    def populate_from_model(self, order):
-        self.payment_method.data = order.payment_method
-        for ordered_ticket in order.order_tickets:
-            form = OrderedTicketForm()
-            form.ticket_name.data = ordered_ticket.ticket.name
-            form.quantity.data = ordered_ticket.quantity
-            self.ordered_tickets.append_entry(form)
+        user = User.query.filter_by(username=field.data).first()
+        if user:
+            raise ValidationError('Molimo koristite drugo korisničko ime.')
 
 
 class ChangePasswordForm(FlaskForm):

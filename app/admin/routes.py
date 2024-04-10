@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_args
 from app import db
 from app.admin import bp
-from app.admin.forms import TicketForm, UserForm, EditOrderForm, ChangePasswordForm
+from app.admin.forms import TicketForm, AddUserForm, EditUserForm, EditOrderForm, ChangePasswordForm
 from app.models import Ticket, Order, User
 
 
@@ -37,7 +37,7 @@ def add_user():
     if not current_user.is_admin:
         return redirect(url_for('auth.login'))
 
-    form = UserForm()
+    form = AddUserForm()
 
     if form.validate_on_submit():
         is_admin = request.form.get('is_admin') == 'True'
@@ -60,13 +60,12 @@ def edit_user(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    form = UserForm(obj=user)
+    form = EditUserForm(obj=user)
 
     if form.validate_on_submit():
         form.populate_obj(user)
         is_admin = request.form.get('is_admin') == 'True'
         user.is_admin = is_admin
-        user.set_password(form.password.data)
         db.session.commit()
         flash('Korisnik uspješno ažuriran.', 'success')
         return redirect(url_for('admin.edit_user', user_id=user_id))
