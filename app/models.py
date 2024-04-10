@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
     username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True,
                                                 unique=True)
     email: so.Mapped[str] = so.mapped_column(sa.String(120), index=True,
-                                             unique=True)
+                                             unique=False)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     is_admin = db.Column(db.Boolean(), default=False)
     balance = db.Column(db.Float, nullable=False)
