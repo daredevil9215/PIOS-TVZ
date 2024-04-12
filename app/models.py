@@ -56,6 +56,9 @@ class Order(db.Model):
 
     order_tickets = db.relationship(
         'OrderTicket', backref='order', cascade='all, delete-orphan', overlaps="orders,ticket")
+    user = db.relationship(
+        'User'
+    )
 
 
 class OrderTicket(db.Model):
