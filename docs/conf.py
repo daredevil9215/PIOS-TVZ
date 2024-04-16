@@ -9,7 +9,9 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 scripts = ['/home/grozd/Desktop/Faks/Programsko inzenjerstvo u otvorenim sustavima/tim09-app',
-           '/home/grozd/Desktop/Faks/Programsko inzenjerstvo u otvorenim sustavima/tim09-app/app']
+           '/home/grozd/Desktop/Faks/Programsko inzenjerstvo u otvorenim sustavima/tim09-app/app',
+           '/home/grozd/Desktop/Faks/Programsko inzenjerstvo u otvorenim sustavima/tim09-app/app/main'
+           ]
 if scripts not in sys.path:
     for s in scripts:
         sys.path.append(s)
