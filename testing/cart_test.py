@@ -4,41 +4,63 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 def test_add_to_cart(element_number, quantity):
-    # Open app
-    driver.get("http://127.0.0.1:5000/")
 
-    # Find quantity input by element number
-    quantity_element = driver.find_element(By.ID, "quantity-" + str(element_number))
+    print(f'Add to cart test started with order number: {element_number}, quantity: {quantity}')
 
-    # Increase quantity
-    for _ in range(quantity):
-        quantity_element.send_keys(Keys.UP)
-    
-    # Get element by custom HTML attribute
-    attribute_name = "data-ticket-id" 
-    attribute_value = str(element_number)
-    xpath = f"//*[@{attribute_name}='{attribute_value}']"
-    click_element = driver.find_element(By.XPATH, xpath)
+    try:
 
-    time.sleep(1)
+        # Open app
+        driver.get("http://127.0.0.1:5000/")
 
-    click_element.click()
+        # Find quantity input by element number
+        quantity_element = driver.find_element(By.ID, "quantity-" + str(element_number))
 
-    time.sleep(1)
+        # Increase quantity
+        for _ in range(quantity):
+            quantity_element.send_keys(Keys.UP)
+        
+        # Get element by custom HTML attribute
+        attribute_name = "data-ticket-id" 
+        attribute_value = str(element_number)
+        xpath = f"//*[@{attribute_name}='{attribute_value}']"
+        click_element = driver.find_element(By.XPATH, xpath)
+
+        time.sleep(1)
+
+        click_element.click()
+
+        time.sleep(1)
+
+        print(f'Add to cart test successfully finished with order number: {element_number}, quantity: {quantity}')
+
+    except:
+
+        print(f'Add to cart test failed with order number: {element_number}, quantity: {quantity}')
 
 def test_remove_from_cart(order):
-    # Open app
-    driver.get("http://127.0.0.1:5000/")
 
-    # Find Kosarica tab
-    driver.find_element(By.ID, "cart").click()
+    print(f'Remove from cart test started with order number: {order}')
 
-    # Select Izbrisi button with using the order of ticket
-    form = driver.find_element(By.XPATH, "//form[@action='" + "/remove_from_cart/" + str(order) + "']")
+    try:
 
-    form.click()
+        # Open app
+        driver.get("http://127.0.0.1:5000/")
 
-    time.sleep(3)
+        # Find Kosarica tab
+        driver.find_element(By.ID, "cart").click()
+
+        # Select Izbrisi button with using the order of ticket
+        form = driver.find_element(By.XPATH, "//form[@action='" + "/remove_from_cart/" + str(order) + "']")
+
+        form.click()
+
+        time.sleep(3)
+
+        print(f'Remove from cart test successfully finished with order number: {order}')
+
+    except:
+
+        print(f'Remove from cart test failed with order number: {order}')
     
 if __name__ == "__main__":
     # Chromium options

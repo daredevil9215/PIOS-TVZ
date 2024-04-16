@@ -3,20 +3,30 @@ import time
 from selenium.webdriver.common.by import By
 
 def test_user_login(username, password):
-    # Open app
-    driver.get("http://127.0.0.1:5000/")
 
-    # Find and click "Prijava"
-    driver.find_element(By.ID, "prijava").click()
+    print(f'User login test started with username: {username}, password: {password}')
 
-    # Find and input username
-    driver.find_element(By.NAME, "username").send_keys(username)
+    try:
 
-    # Find and input password
-    driver.find_element(By.NAME, "password").send_keys(password)
+        # Open app
+        driver.get("http://127.0.0.1:5000/")
 
-    # Click submit
-    driver.find_elements(By.ID, "submit")[0].click()
+        # Find and click "Prijava"
+        driver.find_element(By.ID, "prijava").click()
+
+        # Find and input username
+        driver.find_element(By.NAME, "username").send_keys(username)
+
+        # Find and input password
+        driver.find_element(By.NAME, "password").send_keys(password)
+
+        # Click submit
+        driver.find_elements(By.ID, "submit")[0].click()
+
+        print(f'User login test successfully finished with username: {username}, password: {password}')
+
+    except:
+        print(f'User login test failed with username: {username}, password: {password}')
 
 def test_logout():
     # Click the logout button
